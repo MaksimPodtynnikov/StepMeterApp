@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/statistic"
+        android:icon="@drawable/ic_baseline_query_stats_24"
+        android:title="@string/statistic" />
+
+    <item
+        android:id="@+id/targets"
+        android:icon="@drawable/ic_baseline_workspace_premium_24"
+        android:title="@string/targets" />
+
+    <item
+        android:id="@+id/steps"
+        android:icon="@drawable/ic_baseline_directions_walk_24"
+        android:title="@string/steps" />
+
+    <item
+        android:id="@+id/settings"
+        android:icon="@drawable/ic_baseline_settings_24"
+        android:title="@string/settings" />
+
+    <item
+        android:id="@+id/map"
+        android:icon="@drawable/ic_baseline_map_24"
+        android:title="@string/map" />
+
+</menu>
