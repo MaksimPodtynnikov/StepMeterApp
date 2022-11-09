@@ -2,6 +2,8 @@ package ru.podtynnikov.stepmeter
 
 import android.Manifest
 import android.Manifest.permission.*
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.hardware.Sensor
@@ -35,7 +37,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private var sensorManager: SensorManager? = null
     private var pref: PreferenceAdapter? =null
     private var currentFragment: Int=0
-
+    private var channel: String="Достижения"
+    private var channelID: Int= 202
     var fragment: Fragment=HomeFragment()
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -86,7 +89,20 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             }
             true
         }
+        createNotificationChannel()
         loadDays()
+    }
+    private fun createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(channelID.toString(), channel, NotificationManager.IMPORTANCE_DEFAULT).apply {
+                description = "descriptionText"
+            }
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
     }
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onSensorChanged(event: SensorEvent?) {
@@ -128,13 +144,13 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         dataBaseAdapter.open()
         for(target in dataBaseAdapter.targets) {
             if (target.title == "Из варяг в греки") {
-                if (target.steps <= pref!!.daySteps + pref!!.previousSteps) {
+                if (target.steps <= pref!!.daySteps + pref!!.previousSteps && !target.isReady) {
                     target.isReady = true
                     dataBaseAdapter.updateTarget(target)
                     sendNotify(target.title)
                 }
             }
-            else if (target.steps <= pref!!.daySteps) {
+            else if (target.steps <= pref!!.daySteps && !target.isReady) {
                     target.isReady = true
                     dataBaseAdapter.updateTarget(target)
                 sendNotify(target.title)
@@ -142,12 +158,12 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         }
         dataBaseAdapter.close()
     }
-    fun sendNotify(text: String)
+    private fun sendNotify(text: String)
     {
-        val builder = NotificationCompat.Builder(this, "channelID")
+        val builder = NotificationCompat.Builder(this, channelID.toString())
             .setSmallIcon(R.drawable.ic_baseline_celebration_24)
             .setContentTitle("Новое достижение")
-            .setContentText("Вы получили достижение '$text'")
+            .setContentText("Вы получили достижение «$text»")
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 

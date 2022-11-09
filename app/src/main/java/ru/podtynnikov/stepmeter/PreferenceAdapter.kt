@@ -7,7 +7,7 @@ import androidx.annotation.RequiresApi
 import java.time.LocalDate
 
 class PreferenceAdapter(context: Context) {
-    var period = 1
+    var period = 7
         get(): Int {
             if (sharedPreferences!!.contains("period")) period = sharedPreferences!!.getInt("period", 0)
             return field
